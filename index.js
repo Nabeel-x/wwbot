@@ -29,12 +29,24 @@ client.on('message_create', async message => {
     const content = message.body;
 	if (content === '!ping') {
 		// send back "pong" to the chat the message was sent in
-		client.sendMessage(message.from, 'pong');
+		// client.sendMessage(message.from, 'pong');
+        message.reply("pong");
 	}
     if(content === '!meme'){
         const meme = await axios("https://meme-api.com/gimme")
-        .then(res=>res.data)
-        client.sendMessage(message.from,await MessageMedia.fromUrl(meme.url));
+        .then(res=>res.data);
+        message.reply(await MessageMedia.fromUrl(meme.url));
+    }
+    if(content === '!joke'){
+        const joke = await axios("https://official-joke-api.appspot.com/random_joke")
+        .then(res=>res.data);
+        const jokeMsg = await message.reply(joke.setup);
+        if(joke.punchline) setTimeout(function (){jokeMsg.reply(joke.punchline)},2000);
+    }
+    if(content == '!goutham'){
+        const insult = await axios("https://evilinsult.com/generate_insult.php?lang=en&type=json")
+        .then(res=>res.data);
+        message.reply(insult.insult);
     }
 });
 
